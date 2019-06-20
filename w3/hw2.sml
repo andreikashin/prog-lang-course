@@ -16,12 +16,17 @@ fun all_except_item (item, all) =
 		       else first::all_except_item(item, rest)
 
 fun all_except_item_tail (all, item, result) =
-    
-    case all of
-	[] => result
-      | x::xs => if same_string(item, x)
-		 then all_except_item_tail(xs,item,result)
-		 else all_except_item_tail(xs,item,append(result,[x]))
+    let fun append (ys, zs) =
+		      case ys of
+			  [] => zs
+			| y::ys' => y::append(ys',zs)
+		      
+    in case all of
+	   [] => result
+	 | x::xs => if same_string(item, x)
+		    then all_except_item_tail(xs,item,result)
+		    else all_except_item_tail(xs,item,append(result,[x]))
+    end
 
 fun contains (item, items) =
     case items of
@@ -111,6 +116,13 @@ fun remove_card (cs, c, e) =
 	then all_except(c, cs)
 	else raise e
     end
+
+fun all_same_color (cards) =
+    case cards of
+	[] => true
+      | x::[] => true
+      | x::x'::[] => card_color(x) = card_color(x')
+      | x::x'::xs => card_color(x) = card_color(x') andalso all_same_color(x'::xs)
 
 
 
