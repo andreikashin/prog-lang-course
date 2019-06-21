@@ -124,8 +124,23 @@ fun all_same_color (cards) =
       | x::x'::[] => card_color(x) = card_color(x')
       | x::x'::xs => card_color(x) = card_color(x') andalso all_same_color(x'::xs)
 
+fun sum_cards (cards) =
+    let
+	fun f (cards, acc) =
+	    case cards of
+		[] => acc
+	      | x::xs => f(xs, acc + card_value(x))
+    in
+	f(cards, 0)
+    end
 
-
-		  
+fun score (cards, goal) =
+    let
+	val sum = sum_cards(cards)
+	val diff = sum - goal
+	val pr_sc = if diff > 0 then 3 * diff else ~1 * diff
+    in
+	if all_same_color(cards) then pr_sc div 2 else pr_sc
+    end
 
 		  
