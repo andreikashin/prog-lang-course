@@ -143,7 +143,6 @@ fun score (cards, goal) =
     in
 	if all_same_color(cards) then pr_sc div 2 else pr_sc
     end
-	
-	
+
 
 		  
