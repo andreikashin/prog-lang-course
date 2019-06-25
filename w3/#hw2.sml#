@@ -144,6 +144,14 @@ fun score (cards, goal) =
 	if all_same_color(cards) then pr_sc div 2 else pr_sc
     end
 	
+fun officiate (cards, moves, goal, held_cards) =
+    let
 	
-
+    in case moves of
+	   [] => score(held_cards, goal)
+	 | m::ms =>
+	   case m of
+	       Discard c => officiate (cards, ms, goal, all_except_item(c, held_cards))
+	     | Draw => if 
+    end
 		  
