@@ -146,24 +146,17 @@ fun score (cards, goal) =
     end
 	
 fun officiate (cards, moves, goal) =
-    let fun h (c::cs', [], held) =
-	    (print("no more mvs");score(held, goal))
-	  | h (cs, (Discard c)::ms, held) =
-	    (print("disc\n"); h(cs, ms, remove_card(held, c, IllegalMove)))
-	  | h (c::cs', (Draw)::[], held) =
-	    (print("last draw\n");score(c::held, goal))
-	  | h ([],(Draw)::ms,held) = (print("empty cs\n"); score(held, goal))
-	  | h (c::cs', (Draw)::ms, held) =
-	    (print("drawing");
-	     print(Int.toString(card_value(c)));
+    let fun h (c::cs', [], held) = score(held, goal)
+	  | h (cs, (Discard c)::ms, held) = h(cs, ms, remove_card(held, c, IllegalMove))
+	  | h (c::cs', (Draw)::[], held) = score(c::held, goal)
+	  | h ([],(Draw)::_,held) = score(held, goal)
+	  | h (c::cs', (Draw)::ms, held) =	    
 	    let	val sc = score(c::held, goal)
 	    in	      			      
-		if goal > sc
-		then (print("end\n");sc)
-		else (print("cont\n");h(cs',ms,c::held))
-	    end)
-		
-		    
+		if goal < sc
+		then sc
+		else h(cs',ms,c::held)
+	    end
     in
 	h(cards, moves, [])
     end
