@@ -72,13 +72,14 @@ fun get_substitutions2 (items_lists, item) =
 		 else get_substitutions2(xs, item)
       | _ => []
 
-fun similar_names (name_lists, fullname) =
+fun similar_names (name_lists, {first=x, middle=y, last=z}) =
     let fun combine (names, name) =
 	    case names of
 		[] => []
-	      | x::xs =>
-		{first=x, last=(#last fullname), middle= (#middle fullname)}::combine(xs, name);
-	val firstname =  #first fullname
+	      | x'::xs =>
+		{first=x', middle=y, last=z}::combine(xs, name);
+	val firstname = x
+	val fullname = {first=x, middle=y, last=z}
     in
 	fullname::combine(get_substitutions1(name_lists, firstname), firstname)
     end
@@ -143,6 +144,26 @@ fun score (cards, goal) =
     in
 	if all_same_color(cards) then pr_sc div 2 else pr_sc
     end
-
-
-		  
+	
+fun officiate (cards, moves, goal) =
+    let fun h (c::cs', [], held) =
+	    (print("no more mvs");score(held, goal))
+	  | h (cs, (Discard c)::ms, held) =
+	    (print("disc\n"); h(cs, ms, remove_card(held, c, IllegalMove)))
+	  | h (c::cs', (Draw)::[], held) =
+	    (print("last draw\n");score(c::held, goal))
+	  | h ([],(Draw)::ms,held) = (print("empty cs\n"); score(held, goal))
+	  | h (c::cs', (Draw)::ms, held) =
+	    (print("drawing");
+	     print(Int.toString(card_value(c)));
+	    let	val sc = score(c::held, goal)
+	    in	      			      
+		if goal > sc
+		then (print("end\n");sc)
+		else (print("cont\n");h(cs',ms,c::held))
+	    end)
+		
+		    
+    in
+	h(cards, moves, [])
+    end
