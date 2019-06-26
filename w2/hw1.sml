@@ -50,6 +50,7 @@ fun date_to_string (date:int*int*int)=
 	Int.toString(#1 date)
     end
 
+(* 8 *)
 fun number_before_reaching_sum (sum:int, numbers:int list) =
     let 
 	val new_sum = sum - hd numbers
@@ -59,6 +60,7 @@ fun number_before_reaching_sum (sum:int, numbers:int list) =
 	else 1+number_before_reaching_sum(new_sum, tl numbers)
     end
 
+(* 9 *)
 fun what_month (day:int) =
     let val month_days =
 	    [31,28,31,30,31,30,31,31,30,31,30,31]
@@ -66,11 +68,13 @@ fun what_month (day:int) =
 	number_before_reaching_sum(day, month_days)+1
     end
 
+(* 10 *)
 fun month_range (date1:int, date2:int) =
     if date2 < date1
     then []
     else what_month(date1) :: month_range(date1+1, date2)
 
+(* 11 *)
 fun oldest (dates:(int*int*int) list) =
     if null dates
     then NONE
