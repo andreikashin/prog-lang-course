@@ -1,5 +1,10 @@
 (* Dan Grossman, Coursera PL, HW2 Provided Code *)
 
+(* all_except_option: Your function returns an incorrect result when the requested string is not in the input list. [incorrect answer] 
+all_except_option: Your function returns an incorrect result when the input list is the empty list. [incorrect answer] 
+3a tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission) 
+3b tests failed to run (most likely caused by an incorrect function signature or unimplemented function in the submission) 
+Used '#' 17 times. *)
 (* if you use this function to compare two strings (returns true if the same
    string), then you avoid several of the functions in problem 1 having
    polymorphic types that may be confusing *)
@@ -36,7 +41,7 @@ fun append (xs,ys) =
         x::xs' => x :: append(xs',ys)
       | [] => ys
 (* put your solutions for problem 1 here *)
-fun is_older (date1:int*int*int, date2:int*int*int) =
+(*fun is_older (date1:int*int*int, date2:int*int*int) =
     #1 date1 < #1 date2 orelse 
     (#1 date1 = #1 date2 andalso #2 date1 < #2 date2) orelse
     (#1 date1 = #1 date2 andalso 
@@ -130,6 +135,7 @@ fun oldest (dates:(int*int*int) list) =
 	in
 	    SOME (max(dates))
 	end
+*)
 	    
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
@@ -144,7 +150,18 @@ exception IllegalMove
 
 (* put your solutions for problem 2 here *)
 fun all_except_option (item, items) =
-    SOME (all_except_item(item, items))
+    if contains(item, items)
+    then SOME (all_except_item(item, items))
+    else NONE
+
+fun all_except_option2 (item, items) =
+    case items of
+	[] => NONE
+      | x::xs => if x=item
+		 then SOME xs
+		 else case all_except_option2(item, xs) of
+			  NONE => NONE
+			| SOME y => SOME(x::y)
 
 fun get_substitutions1 (items_lists, item) =
     case items_lists of
@@ -165,8 +182,7 @@ fun similar_names (name_lists, {first=x, middle=y, last=z}) =
     let fun combine (names, name) =
 	    case names of
 		[] => []
-	      | x'::xs =>
-		{first=x', middle=y, last=z}::combine(xs, name);
+	      | x'::xs => {first=x', middle=y, last=z}::combine(xs, name);
 	val firstname = x
 	val fullname = {first=x, middle=y, last=z}
     in
@@ -235,6 +251,31 @@ fun score (cards, goal) =
     end
 	
 fun officiate (cards, moves, goal) =
+    let fun h (c::cs', [], held) = score(held, goal)
+	  | h (cs, (Discard c)::ms, held) = h(cs, ms, remove_card(held, c, IllegalMove))
+	  | h (c::cs', (Draw)::[], held) = score(c::held, goal)
+	  | h ([],(Draw)::_,held) = score(held, goal)
+	  | h (c::cs', (Draw)::ms, held) =	    
+	    let	val sc = score(c::held, goal)
+	    in	      			      
+		if goal < sc
+		then sc
+		else h(cs',ms,c::held)
+	    end
+    in
+	h(cards, moves, [])
+    end
+
+fun score_challenge (cards, goal) =
+    let
+	val sum = sum_cards(cards)
+	val diff = sum - goal
+	val pr_sc = if diff > 0 then 3 * diff else diff * ~1
+    in
+	if all_same_color(cards) then pr_sc div 2 else pr_sc
+    end
+
+fun officiate_challenge (cards, moves, goal) =
     let fun h (c::cs', [], held) = score(held, goal)
 	  | h (cs, (Discard c)::ms, held) = h(cs, ms, remove_card(held, c, IllegalMove))
 	  | h (c::cs', (Draw)::[], held) = score(c::held, goal)

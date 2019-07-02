@@ -254,3 +254,6 @@ fun officiate (cards, moves, goal) =
     in
 	h(cards, moves, [])
     end
+
+
+	
