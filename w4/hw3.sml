@@ -53,3 +53,12 @@ fun longest_string1 (items) =
 	)
 	""
 	items
+
+fun longest_string2 (items) =
+    List.foldr
+	(fn (item, init) => if String.size(item) > String.size(init)
+			    then item
+			    else init
+	)
+	""
+	items
