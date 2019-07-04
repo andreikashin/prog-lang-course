@@ -62,3 +62,68 @@ fun longest_string2 (items) =
 	)
 	""
 	items
+
+fun longest_string_helper f items =
+    List.foldl
+	(fn (a, b) => if f (String.size(a), String.size(b))
+		      then a
+		      else b
+	)
+	""
+	items
+
+val longest_string3 =
+ fn (items) =>
+    let val f = fn (a,b)=> a>b
+    in
+	List.foldl
+	    (fn (a, b) => if f (String.size(a), String.size(b))
+			  then a
+			  else b
+	    )
+	    ""
+	    items
+    end
+	
+val longest_string4 =
+ fn (items) =>
+    let val f = fn (a,b)=> a>b
+    in
+	List.foldr
+	    (fn (a, b) => if f (String.size(a), String.size(b))
+			  then a
+			  else b
+	    )
+	    ""
+	    items
+    end
+(*
+val longest_capitalized =
+ fn items =>
+    let
+	val f =
+	 fn (a,b) => if String.size(a) > String.size(b)
+		     then a
+		     else b
+	val g = fn (item) => Char.isUpper(String.sub(item,0))
+    in
+	List.foldl
+	    (fn (a, b) => if g o f (a, b)		  
+			  then a
+			  else b
+	    )
+	    ""
+	    items
+    end
+*)
+	
+fun rev_string items =
+    let val chars = String.explode(items)
+	fun rev letters =
+	    case letters of
+		[] => ""
+	      | x::xs => rev(xs) ^ String.str(x)
+				       
+    in
+	rev(chars)
+    end
