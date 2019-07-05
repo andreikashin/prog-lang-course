@@ -103,3 +103,64 @@ fun all_answers f the_list =
 	h f [] the_list
     end
 	
+fun count_wildcards i =
+    g (fn x => 1) (fn y => 0) i
+
+fun count_wild_and_variable_lengths i =
+    g (fn x => 1) String.size i
+
+fun count_some_var (var, i) =
+    let fun h value =
+	     if value = var
+	     then 1
+	     else 0
+    in
+	g (fn x => 0) h i
+    end
+
+fun check_pat pat =
+    let
+	fun h1 p acc =
+	    case p of
+		Variable x => [x] @ acc
+	      | TupleP ps => List.foldl (fn (p,i) => (h1 p i)) acc ps
+	      | ConstructorP(_,p) => h1 p acc 
+	      | _ => acc
+
+	fun h2 items =
+	    case items of
+		[] => false
+	      | x::xs => not (List.exists (fn i => i = x) xs)
+
+	
+    in
+	h2 (h1 pat [])
+    end
+	
+fun h3 p acc =
+    case p of
+	Variable x => [x] @ acc
+      | TupleP ps => List.foldl (fn (p,i) => (h3 p i)) acc ps
+      | ConstructorP(_,p) => h3 p acc 
+      | _ => acc
+		 
+fun h4 items =
+    case items of
+	[] => false
+      | x::xs => not (List.exists (fn i => i = x) xs)			
+(*
+fun g2 f1 f2 p =
+    let 
+	val r = g f1 f2 
+    in
+	case p of
+	    Wildcard          => f1 ()
+	  | Variable x        => f2 x
+	  | TupleP ps         => List.foldl (fn (p,i) => (r p) + i) 0 ps
+	  | ConstructorP(_,p) => r p
+	  | _                 => 0
+    end
+*)
+fun match (v, p) = NONE
+fun first_match v p = NONE
+ 
