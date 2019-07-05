@@ -78,8 +78,70 @@ val test10a4 = check_pat (
 	    ConstructorP("cony",Variable "test")
 	]
     ) = true
-							     
+	    
 val test11 = match (Const(1), UnitP) = NONE
+val test11a1 = match(Unit, UnitP) = SOME []
+val test11a2 = match(Unit, Variable "cat") = SOME [("cat", Unit)]
+val test11a3 = match(Unit, ConstP 3) = NONE
+val test11a4 = match(Tuple [], TupleP [Wildcard]) = NONE
+val test11a5 = match(Tuple [Unit], TupleP []) = NONE
+val test11a6 = match(Tuple [Unit], Variable "cat") = SOME [("cat", Tuple [Unit])]
+val test11a7 = match(Tuple [Unit], TupleP [Variable "cat"]) = SOME [("cat", Unit)]
+val test11a8 = match(Tuple [Unit, Const 8], TupleP [Variable "cat", ConstP 3]) = NONE
+val test11a9 = match(
+	Tuple [Unit, Const 8],
+	TupleP [Variable "cat", Variable "dog"]
+    ) = SOME [("cat", Unit),("dog", Const 8)]
+	     
+val test11b1 = match(
+	Tuple [Unit, Tuple [Unit, Unit]],
+	TupleP [Variable "cat", TupleP [Variable "dog", Variable "rat"]]
+    ) = SOME [("cat", Unit), ("dog", Unit),  ("rat", Unit)]
+	     
+val test11b2 = match(Constructor ("mat", Unit), ConstructorP ("hat", Variable "cat")) = NONE
+val test11b3 = match(
+	Constructor ("dog", Unit),
+	ConstructorP ("dog", Variable "cat")
+    ) = SOME [("cat", Unit)]
+	     
+val test11b4 = match(
+	Tuple[
+	    Const 17, Unit, Const 7, Constructor ("zoe", Const 7),
+	    Constructor ("zoe", (Constructor ("zoe", Const 7)))
+	],
+	TupleP[Wildcard,Wildcard]
+    ) = NONE
+	    
+val test11b5 = match(Const 7, Wildcard ) = SOME []
+val test11b6 = match(Unit, Wildcard ) = SOME []
+val test11b7 = match(Tuple[Const 7], Wildcard ) = SOME []
+val test11b8 = match(Constructor("cat", Const 7), Wildcard ) = SOME []
+val test11b9 = match(Const 7, Variable "Zoe" ) = SOME [("Zoe", Const 7)]
+val test11c1 = match(Unit, Variable "chopsticks" ) = SOME [("chopsticks", Unit)]
+val test11c2 = match(Unit, UnitP ) = SOME []
+val test11c3 = match(Const 7, UnitP ) = NONE
+val test11c4 = match(Const 7, ConstP 7 ) = SOME []
+val test11c5 = match(Const 7, ConstP 8 ) = NONE
+val test11c6 = match(Constructor("Cat", Const 7), ConstructorP("Cat", Wildcard)) =  SOME[]
+val test11c7 = match(Constructor("Dog", Const 7), ConstructorP("Cat", Wildcard)) =  NONE
+val test11c8 = match(Constructor("Cat", Const 7), ConstructorP("Cat", UnitP)) =  NONE
+val test11c9 = match(
+	Constructor("Cat", Const 7),
+	ConstructorP("Cat", Variable "dog")
+    )  =  SOME [("dog", Const 7)]
+	       
+val test11d1 = match(Tuple[Const 7], TupleP[ConstP 7]) =  SOME []
+val test11d2 = match(Tuple[Const 7], TupleP[ConstP 7,ConstP 7]) =  NONE
+val test11d3 = match(
+	Tuple[Const 7, Const 6, Unit, Const 8],
+	TupleP[ConstP 7, Variable "cat",Wildcard, ConstP 8]
+    ) = SOME [("cat",Const 6)]
+	     
+val test11d4 = match(
+	Tuple[Const 7, Const 6, Unit, Const 7],
+	TupleP[Variable "a", Variable "ab", Variable "abc", Variable "abcd"]
+    ) = SOME [("a",Const 7), ("ab",Const 6), ("abc",Unit), ("abcd",Const 7)]
+
 
 val test12 = first_match Unit [UnitP] = SOME []
 
