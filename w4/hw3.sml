@@ -136,18 +136,7 @@ fun check_pat pat =
     in
 	h2 (h1 pat [])
     end
-	
-fun h3 p acc =
-    case p of
-	Variable x => [x] @ acc
-      | TupleP ps => List.foldl (fn (p,i) => (h3 p i)) acc ps
-      | ConstructorP(_,p) => h3 p acc 
-      | _ => acc
-		 
-fun h4 items =
-    case items of
-	[] => false
-      | x::xs => not (List.exists (fn i => i = x) xs)			
+		
 (*
 fun g2 f1 f2 p =
     let 
@@ -160,6 +149,19 @@ fun g2 f1 f2 p =
 	  | ConstructorP(_,p) => r p
 	  | _                 => 0
     end
+	
+fun h3 p acc =
+    case p of
+	Variable x => [x] @ acc
+      | TupleP ps => List.foldl (fn (p,i) => (h3 p i)) acc ps
+      | ConstructorP(_,p) => h3 p acc 
+      | _ => acc
+		 
+fun h4 items =
+    case items of
+	[] => false
+      | x::xs => not (List.exists (fn i => i = x) xs)	
+
 *)
 fun match (v, p) =
     case p of
