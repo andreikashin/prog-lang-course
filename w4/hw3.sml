@@ -161,6 +161,19 @@ fun g2 f1 f2 p =
 	  | _                 => 0
     end
 *)
-fun match (v, p) = NONE
+fun match (v, p) =
+    case p of
+	Wildcard => SOME []
+      | Variable x => SOME [(x, v)]
+      | UnitP => NONE
+      | ConstP => NONE
+      | TupleP => NONE
+      | ConstructorP => NONE
+      | _ => NONE
+
+
+
+
+    
 fun first_match v p = NONE
  
