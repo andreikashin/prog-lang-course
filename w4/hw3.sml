@@ -166,12 +166,21 @@ fun h4 items =
 fun match (v, p) =
     case p of
 	Wildcard => SOME []
-      | Variable x => SOME [(x, v)]
-      | UnitP => NONE
-      | ConstP => NONE
-      | TupleP => NONE
-      | ConstructorP => NONE
-      | _ => NONE
+      | Variable s => SOME [(s, v)]
+      | UnitP => (case v of
+		     Unit => SOME [] 
+		   | _ => NONE)
+			      
+      | ConstP c => (case v of
+			 Const c' => if c = c' then SOME [] else NONE
+		       | _ => NONE )
+      | TupleP ps => (case v of
+			  Tuple vs => if List.length(ps) = List.length(vs)
+				      then all_answers match (ListPair.zip(vs, ps))
+				      else NONE
+			| _ => NONE )
+      | ConstructorP(n,cp) => NONE
+      
 
 
 
