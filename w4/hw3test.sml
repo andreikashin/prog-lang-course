@@ -144,4 +144,9 @@ val test11d4 = match(
 
 
 val test12 = first_match Unit [UnitP] = SOME []
-
+val test12_2 = first_match (Const 1) [ConstP 1] = SOME [];
+val test12_3 = first_match (Const 1) [Variable "a"] = SOME [("a", Const 1)];
+val test12_4 = first_match Unit [Variable "a", Variable "b"] = SOME [("a", Unit)];
+val test12_5 = first_match
+		   (Const 5)
+		   [Variable "a", Variable "b",Variable "c"] = SOME [("a", Const 5)];

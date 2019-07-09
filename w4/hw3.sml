@@ -179,12 +179,14 @@ fun match (v, p) =
 				      then all_answers match (ListPair.zip(vs, ps))
 				      else NONE
 			| _ => NONE )
-      | ConstructorP(n,cp) => NONE
-      
-
-
-
-
+      | ConstructorP(np,cp) => (case v of
+				    Constructor(nv,cv)=>
+				    if np=nv
+				    then match(cv,cp)
+				    else NONE)
+          
+fun first_match v ps =
+    SOME (first_answer (fn x => match(v,x)) ps)
+    handle NoAnswer => NONE
     
-fun first_match v p = NONE
  
